@@ -112,7 +112,7 @@ module.exports = function (grunt) {
             var newContent = htmlContent;
 
             if (options.type === "embed") {
-                //newContent = tool.getHtmlContentSuffix($, fileArr);
+                newContent = tool.getHtmlContentEmbed($, fileArr);
             } else {
                 newContent = tool.getHtmlContentSuffix($, fileArr);
             }

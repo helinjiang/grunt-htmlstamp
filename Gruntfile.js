@@ -55,6 +55,23 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/suffix_hash.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
+            },
+            embed_time: {
+                options: {
+                    type: 'embed'
+                },
+                files: {
+                    'tmp/embed_time.html': ['tmp/test1.js', 'tmp/test1.css']
+                }
+            },
+            embed_hash: {
+                options: {
+                    type: 'embed',
+                    appendType: 'hash'
+                },
+                files: {
+                    'tmp/embed_hash.html': ['tmp/test1.js', 'tmp/test1.css']
+                }
             }
         },
 

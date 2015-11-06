@@ -22,6 +22,29 @@ var grunt = require('grunt');
  test.ifError(value)
  */
 
+function checkTimestamp(actual, expected) {
+    var actualArr = [],
+        expectedArr = [],
+        reg = /\_v=(\d+)/gi,
+        item;
+
+    while (item = reg.exec(actual)) {
+        actualArr.push(item[1] + '');
+    }
+
+    while (item = reg.exec(expected)) {
+        expectedArr.push(item[1] + '');
+    }
+
+    // TODO 此处可以再考虑修改得更严格些
+    // 如果匹配的数组个数不一样则失败
+    if (actualArr.length !== expectedArr.length) {
+        return false;
+    }
+
+    return true;
+}
+
 exports.htmlstamp = {
     setUp: function (done) {
         // setup here if necessary
@@ -31,30 +54,15 @@ exports.htmlstamp = {
         test.expect(1);
 
         var actual = grunt.file.read('tmp/suffix_time.html'),
-            expected = grunt.file.read('test/expected/suffix_time.html'),
-            actualArr = [],
-            expectedArr = [],
-            reg = /\_v=(\d+)/gi,
-            item;
-
-        while (item = reg.exec(actual)) {
-            actualArr.push(item[1] + '');
-        }
-
-        while (item = reg.exec(expected)) {
-            expectedArr.push(item[1] + '');
-        }
+            expected = grunt.file.read('test/expected/suffix_time.html');
 
         /*
          * 注意此处的判断应该是下面这种，但它只是抛出异常，因此变通的使用test.equal来处理。
-         * test.ifError(actual == expected || actual.length != expected.length);
-         *
+         * test.ifError(!checkTimestamp(actual,expected));
          */
         var tmp1 = actual,
             tmp2 = actual;
-
-        // 如果匹配的数组个数不一样则失败
-        if (actualArr.length !== expectedArr.length) {
+        if (!checkTimestamp(actual, expected)) {
             tmp2 = expected;
         }
 
@@ -65,10 +73,41 @@ exports.htmlstamp = {
     suffix_hash: function (test) {
         test.expect(1);
 
-        var actual = grunt.file.read('tmp/suffix_hash.html');
-        var expected = grunt.file.read('test/expected/suffix_hash.html');
+        var actual = grunt.file.read('tmp/suffix_hash.html'),
+            expected = grunt.file.read('test/expected/suffix_hash.html');
+
         test.equal(actual, expected, 'append in query with hash code. (Eg. script.js?_v=241f131860)');
 
         test.done();
     },
+    embed_time: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/embed_time.html'),
+            expected = grunt.file.read('test/expected/embed_time.html');
+
+        /*
+         * 注意此处的判断应该是下面这种，但它只是抛出异常，因此变通的使用test.equal来处理。
+         * test.ifError(!checkTimestamp(actual,expected));
+         */
+        var tmp1 = actual,
+            tmp2 = actual;
+        if (!checkTimestamp(actual, expected)) {
+            tmp2 = expected;
+        }
+
+        test.equal(tmp1, tmp2, 'append in file name with timestamp. (Eg. script.151106132902.js)');
+
+        test.done();
+    },
+    embed_hash: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/embed_hash.html'),
+            expected = grunt.file.read('test/expected/embed_hash.html');
+
+        test.equal(actual, expected, 'append in file name with hash code. (Eg. script.241f131860.js)');
+
+        test.done();
+    }
 };
