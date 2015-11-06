@@ -127,8 +127,6 @@ module.exports = function (grunt) {
             }
 
             // 写入dest文件内容
-            // TODO 注意此处只是为了写插件时候用，最终版本要移除之
-            htmlFilePath = "tmp/" + path.basename(htmlFilePath);
             grunt.file.write(htmlFilePath, newContent);
 
             // Print a success message.
