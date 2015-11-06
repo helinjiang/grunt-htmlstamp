@@ -30,19 +30,31 @@ exports.htmlstamp = {
     suffix_time: function (test) {
         test.expect(1);
 
-        var reg = /\_v=(\d+)/i;
-        var actual = grunt.file.read('tmp/suffix_time.html').match(reg)[1] + '';
-        var expected = grunt.file.read('test/expected/suffix_time.html').match(reg)[1] + '';
+        var actual = grunt.file.read('tmp/suffix_time.html'),
+            expected = grunt.file.read('test/expected/suffix_time.html'),
+            actualArr = [],
+            expectedArr = [],
+            reg = /\_v=(\d+)/gi,
+            item;
+
+        while (item = reg.exec(actual)) {
+            actualArr.push(item[1] + '');
+        }
+
+        while (item = reg.exec(expected)) {
+            expectedArr.push(item[1] + '');
+        }
 
         /*
          * 注意此处的判断应该是下面这种，但它只是抛出异常，因此变通的使用test.equal来处理。
          * test.ifError(actual == expected || actual.length != expected.length);
          *
-         * 由于时间戳不可能是一样的，但它们的位数是相同的，因此只要达到这两个标准，我们都可以认为用例通过
          */
         var tmp1 = actual,
             tmp2 = actual;
-        if (actual === expected || actual.length !== expected.length) {
+
+        // 如果匹配的数组个数不一样则失败
+        if (actualArr.length !== expectedArr.length) {
             tmp2 = expected;
         }
 

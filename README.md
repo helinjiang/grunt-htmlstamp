@@ -1,25 +1,7 @@
 # grunt-htmlstamp
 
 > deal with html for js or css link
-本插件最终生成结果将覆盖原html文件
 
-如果找不到js或者css，则不会进行修改
-
-后缀模式：时间戳和MD5值。
-
-时间戳模式比较好处理，注意排除绝对URL情况。
-
-MD5模式，测试sha1和md5方式的区别。选择该方式时要生成一个json文件，这样避免同一文件在不同页面时被重复计算md5值。
-
-如果js文件被压缩，但页面中源代码引用的是其非压缩版本，则需要提供一个方法来匹配压缩版和非压缩版。
-
-对压缩版文件md5之后，要生成一份新的文件
-
-inline模式，将代码嵌入到页面中。
-
-replace模式，需要传递替换对应表，然后对相应文件进行替换
-
-要同时支持不同模式的组合
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`

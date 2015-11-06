@@ -35,7 +35,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: 'test/fixtures/',
-                    src: ['**/*.js','**/*.html'],
+                    src: ['**/*.js', '**/*.html', '**/*.css'],
                     dest: 'tmp/'
                 }]
             }
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
         htmlstamp: {
             suffix_time: {
                 files: {
-                    'tmp/suffix_time.html': ['tmp/test1.js']
+                    'tmp/suffix_time.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
             },
             suffix_hash: {
@@ -53,7 +53,7 @@ module.exports = function (grunt) {
                     appendType: 'hash'
                 },
                 files: {
-                    'tmp/suffix_hash.html': ['tmp/test1.js']
+                    'tmp/suffix_hash.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
             }
         },
@@ -76,7 +76,7 @@ module.exports = function (grunt) {
 
     // Whenever the "test" task is run, first clean the "tmp" dir, then run this
     // plugin's task(s), then test the result.
-    grunt.registerTask('test', ['clean','copy', 'htmlstamp', 'nodeunit']);
+    grunt.registerTask('test', ['clean', 'copy', 'htmlstamp', 'nodeunit']);
 
     // By default, lint and run all tests.
     grunt.registerTask('default', ['jshint', 'test']);
