@@ -87,4 +87,6 @@ grunt.initConfig({
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+2015-11-06   v0.1.0   Support `suffix` and `embed` way to change url where you can append both timestamp or hash code.
+
+2015-11-06   v0.2.0  Support `inline` way to insert js or css into html.

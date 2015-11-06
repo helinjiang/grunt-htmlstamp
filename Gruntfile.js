@@ -72,6 +72,14 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/embed_hash.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
+            },
+            inline: {
+                options: {
+                    type: 'inline'
+                },
+                files: {
+                    'tmp/inline.html': ['tmp/test1.js', 'tmp/test1.css']
+                }
             }
         },
 

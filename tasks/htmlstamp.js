@@ -86,7 +86,8 @@ module.exports = function (grunt) {
                  */
 
                 return {
-                    filePath: filePathInHtml,
+                    localPath: filePath, // 相对于Gruntfile.js的路径
+                    filePath: filePathInHtml,// 相对于html的路径
                     appendStr: appendStr
                 };
             });
@@ -110,11 +111,19 @@ module.exports = function (grunt) {
              * @type {String}
              */
             var newContent = htmlContent;
-
-            if (options.type === "embed") {
-                newContent = tool.getHtmlContentEmbed($, fileArr);
-            } else {
-                newContent = tool.getHtmlContentSuffix($, fileArr);
+            switch (options.type) {
+                case "embed":
+                    newContent = tool.getHtmlContentEmbed($, fileArr);
+                    break;
+                case "inline":
+                    newContent = tool.getHtmlContentInline($, fileArr, grunt);
+                    break;
+                case "suffix":
+                    newContent = tool.getHtmlContentSuffix($, fileArr);
+                    break;
+                default :
+                    newContent = tool.getHtmlContentSuffix($, fileArr);
+                    break;
             }
 
             // 写入dest文件内容
