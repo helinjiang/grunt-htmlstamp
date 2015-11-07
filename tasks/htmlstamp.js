@@ -8,7 +8,6 @@
 'use strict';
 
 var cheerio = require('cheerio');
-var path = require('path');
 var util = require("../lib/util");
 var tool = require("../lib/tool");
 
@@ -32,6 +31,15 @@ module.exports = function (grunt) {
             customAppend: "", // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
 
         });
+
+        /**
+         * hash文件对应表，key值为文件相对于Gruntfile.js的路径，value值是要追加的字符串，例如：
+         * {
+         *     'test/fixtures/test1.js':  "20151105151923"
+         * }
+         * @type {{}}
+         */
+        var appendStrMap = {};
 
         // Iterate over all specified file groups.
         this.files.forEach(function (f) {
@@ -65,7 +73,8 @@ module.exports = function (grunt) {
                  * 最终要追加的字符串，可能是时间戳或者hash值等
                  * @type {String}
                  */
-                var appendStr = tool.getAppendStr(grunt, options, jsCssFilePath);
+                var appendStr = appendStrMap[jsCssFilePath] || tool.getAppendStr(grunt, options, jsCssFilePath);
+                appendStrMap[jsCssFilePath] = appendStr;
 
                 /**
                  * js或css文件相对于html文件的路径
@@ -80,6 +89,7 @@ module.exports = function (grunt) {
                  * 则需要将html中的js地址修改为(./)test1.js?_v=20151105151923
                  * 因此针对每一个html中的js文件，需要将(./)xxx.js修改为(./)xxx.js?_v=yyyy
                  * {
+                 *  localPath:"test/fixtures/test1.js",
                  *  filePath:"test1.js",
                  *  appendStr:"20151105151923"
                  * }
@@ -114,6 +124,7 @@ module.exports = function (grunt) {
             switch (options.type) {
                 case "embed":
                     newContent = tool.getHtmlContentEmbed($, fileArr);
+                    tool.copyFileIfEmbed(grunt, fileArr);
                     break;
                 case "inline":
                     newContent = tool.getHtmlContentInline($, fileArr, grunt);

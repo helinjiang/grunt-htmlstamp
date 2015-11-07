@@ -45,6 +45,23 @@ function checkTimestamp(actual, expected) {
     return true;
 }
 
+function checkFileExist(grunt, html) {
+    var reg = /<script.*src="\.\/(.*?)"[^>]*>|<link.*href="\.\/(.*?)"[^>]*>/gi,
+        item;
+
+    while (item = reg.exec(html)) {
+        var fileName = item[1] || item[2],
+            filePath = "tmp/" + fileName;
+
+        if (!grunt.file.exists(filePath)) {
+            return false;
+        }
+
+    }
+
+    return true;
+}
+
 exports.htmlstamp = {
     setUp: function (done) {
         // setup here if necessary
@@ -91,12 +108,20 @@ exports.htmlstamp = {
          * test.ifError(!checkTimestamp(actual,expected));
          */
         var tmp1 = actual,
-            tmp2 = actual;
+            tmp2 = actual,
+            msg;
         if (!checkTimestamp(actual, expected)) {
             tmp2 = expected;
+            msg = 'append in file name with timestamp. (Eg. script.151106132902.js)';
         }
 
-        test.equal(tmp1, tmp2, 'append in file name with timestamp. (Eg. script.151106132902.js)');
+        // embed模式还要注意要确保生成了目标文件！！
+        if (!checkFileExist(grunt, actual)) {
+            tmp2 = expected;
+            msg = 'copy file to new path with timestamp.';
+        }
+
+        test.equal(tmp1, tmp2, msg);
 
         test.done();
     },
@@ -106,7 +131,13 @@ exports.htmlstamp = {
         var actual = grunt.file.read('tmp/embed_hash.html'),
             expected = grunt.file.read('test/expected/embed_hash.html');
 
-        test.equal(actual, expected, 'append in file name with hash code. (Eg. script.241f131860.js)');
+        // embed模式还要注意要确保生成了目标文件！！
+        if (!checkFileExist(grunt, actual)) {
+            test.equal(actual, expected + "TEST", 'copy file to new path with hash code.');
+        } else {
+            test.equal(actual, expected, 'append in file name with hash code. (Eg. script.241f131860.js)');
+        }
+
 
         test.done();
     },
