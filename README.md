@@ -40,6 +40,7 @@ grunt.initConfig({
 
 #### options.type
 Choices: `'suffix'`, `'embed'`, `'inline'`
+
 Default value: `'suffix'`
 
 确定以哪种形式来处理JS和CSS的URL：
@@ -51,6 +52,7 @@ Default value: `'suffix'`
 
 #### options.appendType
 Choices: `'time'`, `'hash'`
+
 Default value: `'time'`
 
 `options.type` 为 `suffix` 和 `inline` 模式时，它们将对URL进行一些处理，需要追加字符串`[appendStr]`，它确定的是“怎么个追加方式”，而 `options.appendType` 则用来确定要“追加什么”：
@@ -60,12 +62,14 @@ Default value: `'time'`
 
 #### options.timestampFormat
 Type: `String`
+
 Default value: `'yymmddHHMMss'`
 
 当 `options.appendType` 为 `time` 时，用于定义时间格式化方式。
 
 #### options.hashFunction
 Type: `Function`
+
 Default value: `undefined`
 
 当 `options.appendType` 为 `hash` 时，用于获得hash值的方法。函数将传入两个参数，依次是 `content`（文件内容）和 `encoding`（文件编码）。
@@ -78,6 +82,7 @@ crypto.createHash('sha1').update(content, 'utf8').digest('hex');
 
 #### options.shim
 Type: `Object`
+
 Default value: `{}`
 
 用于更灵活的控制。key值对应的文件是value值对应的文件的替代者，实际的最后链接地址是value值对应的地址。value值也可以是完整地址，例如：`http://site.com/script.js`。
@@ -277,12 +282,19 @@ grunt.initConfig({
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
-2015-11-06 v0.1.0 Support `suffix` and `embed` way to change url where you can append both timestamp or hash code.
-
-2015-11-06 v0.2.0 Support `inline` way to insert js or css into html.
-
-2015-11-07 v0.2.1 Fix bug.
+2015-11-07 v1.0.1 Fix bug.
 
 2015-11-07 v1.0.0 Support `option.shim` to enable more choice to deal with js or css url.
 
-2015-11-07 v1.0.1 Fix bug.
+2015-11-07 v0.2.1 Fix bug.
+
+2015-11-06 v0.2.0 Support `inline` way to insert js or css into html.
+
+2015-11-06 v0.1.0 Support `suffix` and `embed` way to change url where you can append both timestamp or hash code.
+
+
+
+
+
+
+
