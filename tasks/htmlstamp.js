@@ -25,10 +25,11 @@ module.exports = function (grunt) {
         var options = this.options({
             type: 'suffix', // 以哪种形式追加，suffix:后缀模式，embed:嵌入模式，inline：内联模式，custom：自定义模式
             appendType: 'time', // 追加什么类型的字符串，time:时间戳形式，hash:hash形式，用于type=suffix和embed模式
-            suffixKey: '_v', // 后缀的key，用于type=suffix模式
+            //suffixKey: '_v', // 后缀的key，用于type=suffix模式
             hashFunction: getHash, // 当appendType=hash时获得hash值的函数，用于type=suffix和embed模式
             timestampFormat: 'yymmddHHMMss', // 当appendType=time时，设定时间戳的格式
-            customAppend: '', // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
+            //customAppend: '', // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
+            shim: {} //需要修正的对应关系，key值为当前正使用的文件，value值为替换key值的新的文件，用于type=suffix和embed模式
 
         });
 
@@ -80,17 +81,40 @@ module.exports = function (grunt) {
                  * 则需要将html中的js地址修改为(./)test1.js?_v=20151105151923
                  * 因此针对每一个html中的js文件，需要将(./)xxx.js修改为(./)xxx.js?_v=yyyy
                  * {
-                 *  localPath:"test/fixtures/test1.js",
-                 *  filePath:"test1.js",
+                 *  filePath:"test/fixtures/test1.js",
+                 *  filePathInHtml:"test1.js",
                  *  appendStr:"20151105151923"
                  * }
                  */
 
-                return {
-                    localPath: filePath, // 相对于Gruntfile.js的路径
-                    filePath: filePathInHtml,// 相对于html的路径
+                var item = {
+                    filePath: filePath, // 相对于Gruntfile.js的路径
+                    filePathInHtml: filePathInHtml,// 相对于html的路径
                     appendStr: appendStr
                 };
+
+                // 如果在shim中配置了该路径的shim值，则追加之
+                var shimPath = options.shim[filePath];
+                if (shimPath) {
+                    item.shimPath = shimPath;
+
+                    if (util.isExternalUrl(shimPath)) {
+                        // 如果是完整url，则替换之
+                        item.shimPathToReplace = shimPath;
+                    } else {
+                        // 否则，计算相对于html的地址
+                        item.shimPathInHtml = tool.getPathInHtml(htmlFilePath, shimPath);
+                        item.shimPathToCopy = shimPath;
+
+                        // 且如果不存在该文件则拷贝一份
+                        if (!grunt.file.exists(shimPath)) {
+                            grunt.file.copy(filePath, shimPath);
+                        }
+                    }
+                }
+
+                return item;
+
             });
 
             /**

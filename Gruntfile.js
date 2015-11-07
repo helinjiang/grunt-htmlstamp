@@ -80,6 +80,43 @@ module.exports = function (grunt) {
                 files: {
                     'tmp/inline.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
+            },
+            shim_embed: {
+                options: {
+                    type: 'embed',
+                    appendType: 'hash',
+                    shim: {
+                        'tmp/test2.js': 'tmp/test2.min.js',
+                        'tmp/test3.js': 'tmp/testshim.js',
+                        'tmp/testexternal.js': 'http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js'
+                    }
+                },
+                files: {
+                    'tmp/shim_embed.html': [
+                        'tmp/test1.js',
+                        'tmp/test2.js',
+                        'tmp/test3.js',
+                        'tmp/testexternal.js',
+                        'tmp/test1.css']
+                }
+            },
+            shim_suffix: {
+                options: {
+                    appendType: 'hash',
+                    shim: {
+                        'tmp/test2.js': 'tmp/test2.min.js',
+                        'tmp/test3.js': 'tmp/testshim.js',
+                        'tmp/testexternal.js': 'http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js'
+                    }
+                },
+                files: {
+                    'tmp/shim_suffix.html': [
+                        'tmp/test1.js',
+                        'tmp/test2.js',
+                        'tmp/test3.js',
+                        'tmp/testexternal.js',
+                        'tmp/test1.css']
+                }
             }
         },
 

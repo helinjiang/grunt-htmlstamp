@@ -51,7 +51,7 @@ function checkFileExist(grunt, html) {
 
     while (item = reg.exec(html)) {
         var fileName = item[1] || item[2],
-            filePath = "tmp/" + fileName;
+            filePath = 'tmp/' + fileName;
 
         if (!grunt.file.exists(filePath)) {
             return false;
@@ -112,13 +112,13 @@ exports.htmlstamp = {
             msg;
         if (!checkTimestamp(actual, expected)) {
             tmp2 = expected;
-            msg = 'append in file name with timestamp. (Eg. script.151106132902.js)';
+            msg = 'new file name with timestamp. (Eg. script.151106132902.js)';
         }
 
         // embed模式还要注意要确保生成了目标文件！！
         if (!checkFileExist(grunt, actual)) {
             tmp2 = expected;
-            msg = 'copy file to new path with timestamp.';
+            msg = 'new file name with timestamp and should generate new js or css file too.';
         }
 
         test.equal(tmp1, tmp2, msg);
@@ -133,9 +133,9 @@ exports.htmlstamp = {
 
         // embed模式还要注意要确保生成了目标文件！！
         if (!checkFileExist(grunt, actual)) {
-            test.equal(actual, expected + "TEST", 'copy file to new path with hash code.');
+            test.equal(actual, expected + ' NO JS OR CSS FILE', 'new file name with hash code and should generate new js or css file too.');
         } else {
-            test.equal(actual, expected, 'append in file name with hash code. (Eg. script.241f131860.js)');
+            test.equal(actual, expected, 'new file name with hash code. (Eg. script.241f131860.js)');
         }
 
 
@@ -149,7 +149,33 @@ exports.htmlstamp = {
             reg = /\r\n\s*/gi;
 
         // 注意此处要将换行符和空格等都去掉，否则会因为空格数目不一致导致对比失败
-        test.equal(actual.replace(reg, ""), expected.replace(reg, ""), 'insert code into html.');
+        test.equal(actual.replace(reg, ''), expected.replace(reg, ''), 'insert code into html.');
+
+        test.done();
+    },
+    shim_embed: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/shim_embed.html'),
+            expected = grunt.file.read('test/expected/shim_embed.html');
+
+        // embed模式还要注意要确保生成了目标文件！！
+        if (!checkFileExist(grunt, actual)) {
+            test.equal(actual, expected + ' NO JS OR CSS FILE', 'use shim for embed type and should generate new js or css file too.');
+        } else {
+            test.equal(actual, expected, 'use shim for embed type');
+        }
+
+
+        test.done();
+    },
+    shim_suffix: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/shim_suffix.html'),
+            expected = grunt.file.read('test/expected/shim_suffix.html');
+
+        test.equal(actual, expected, 'use shim for suffix type');
 
         test.done();
     }

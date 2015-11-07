@@ -91,4 +91,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 2015-11-06 v0.2.0 Support `inline` way to insert js or css into html.
 
-2015-11-06 v0.2.1 Fix bug.
+2015-11-07 v0.2.1 Fix bug.
+
+2015-11-07 v1.0.0 Support `option.shim` to enable more choice to deal with js or css url.

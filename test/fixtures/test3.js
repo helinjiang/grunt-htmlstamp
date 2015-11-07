@@ -1,7 +1,5 @@
 /**
- * [文件描述]
- *
- * @author linjianghe
+ * @author helinjiang
  * @date 2015/11/5
  */
 console.log("hello,test3.js!");
