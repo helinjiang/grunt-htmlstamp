@@ -8,11 +8,11 @@
 'use strict';
 
 var cheerio = require('cheerio');
-var util = require("../lib/util");
-var tool = require("../lib/tool");
+var util = require('../lib/util');
+var tool = require('../lib/tool');
 
 function getHash(content, encoding) {
-    return util.getHash(content, encoding, "sha1");
+    return util.getHash(content, encoding, 'sha1');
 }
 
 module.exports = function (grunt) {
@@ -23,12 +23,12 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('htmlstamp', 'deal with html for js or css link', function () {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-            type: "suffix", // 以哪种形式追加，suffix:后缀模式，embed:嵌入模式，inline：内联模式,custom：自定义模式
-            appendType: "time", // 追加什么类型的字符串，time:时间戳形式，hash:hash形式，用于type=suffix和embed模式
-            suffixKey: "_v", // 后缀的key，用于type=suffix模式
+            type: 'suffix', // 以哪种形式追加，suffix:后缀模式，embed:嵌入模式，inline：内联模式，custom：自定义模式
+            appendType: 'time', // 追加什么类型的字符串，time:时间戳形式，hash:hash形式，用于type=suffix和embed模式
+            suffixKey: '_v', // 后缀的key，用于type=suffix模式
             hashFunction: getHash, // 当appendType=hash时获得hash值的函数，用于type=suffix和embed模式
-            timestampFormat: "yymmddHHMMss", // 当appendType=time时，设定时间戳的格式
-            customAppend: "", // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
+            timestampFormat: 'yymmddHHMMss', // 当appendType=time时，设定时间戳的格式
+            customAppend: '', // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
 
         });
 
@@ -113,14 +113,14 @@ module.exports = function (grunt) {
              */
             var newContent = htmlContent;
             switch (options.type) {
-                case "embed":
+                case 'embed':
                     newContent = tool.getHtmlContentEmbed($, fileArr);
                     tool.copyFileIfEmbed(grunt, fileArr);
                     break;
-                case "inline":
+                case 'inline':
                     newContent = tool.getHtmlContentInline($, fileArr, grunt);
                     break;
-                case "suffix":
+                case 'suffix':
                     newContent = tool.getHtmlContentSuffix($, fileArr);
                     break;
                 default :
