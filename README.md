@@ -43,11 +43,11 @@ Choices: `'suffix'`, `'embed'`, `'inline'`
 
 Default value: `'suffix'`
 
-ȷ����������ʽ������JS��CSS��URL��
+确定以哪种形式来处理JS和CSS的URL：
 
-- `'suffix'`����׺ģʽ��������׷�ӵ�query���֣�����֮��Ľ�����ƣ�`xx.js?_v=[appendStr]`
-- `'embed'`��Ƕ��ģʽ�����������뵽�ļ����У�����֮��Ľ�����ƣ�`xx.[appendStr].js`
-- `'inline'`������ģʽ����js��css��Դ��ֱ��Ƕ�뵽htmlҳ����
+- `'suffix'`：后缀模式，将参数追加到query部分，生成之后的结果类似：`xx.js?_v=[appendStr]`
+- `'embed'`：嵌入模式，将参数放入到文件名中，生成之后的结果类似：`xx.[appendStr].js`
+- `'inline'`：内联模式，将js或css的源码直接嵌入到html页面里
 
 
 #### options.appendType
@@ -55,26 +55,26 @@ Choices: `'time'`, `'hash'`
 
 Default value: `'time'`
 
-`options.type` Ϊ `suffix` �� `inline` ģʽʱ�����ǽ���URL����һЩ��������Ҫ׷���ַ���`[appendStr]`����ȷ�����ǡ���ô��׷�ӷ�ʽ������ `options.appendType` ������ȷ��Ҫ��׷��ʲô����
+`options.type` 为 `suffix` 和 `inline` 模式时，它们将对URL进行一些处理，需要追加字符串`[appendStr]`，它确定的是“怎么个追加方式”，而 `options.appendType` 则用来确定要“追加什么”：
 
-- `'time'`��Ҫ׷�ӵ��ַ���Ϊʱ���������֮��Ľ�����ƣ� `test1.js?_v=151107142609` �� `test1.151107142609.js`
-- `'hash'`��Ҫ׷�ӵ��ַ���Ϊ�ļ�hashֵ������֮��Ľ�����ƣ� `test1.js?_v=cc8f05f977` �� `test1.cc8f05f977.js`
+- `'time'`：要追加的字符串为时间戳，生成之后的结果类似： `test1.js?_v=151107142609` 或 `test1.151107142609.js`
+- `'hash'`：要追加的字符串为文件hash值，生成之后的结果类似： `test1.js?_v=cc8f05f977` 或 `test1.cc8f05f977.js`
 
 #### options.timestampFormat
 Type: `String`
 
 Default value: `'yymmddHHMMss'`
 
-�� `options.appendType` Ϊ `time` ʱ�����ڶ���ʱ���ʽ����ʽ��
+当 `options.appendType` 为 `time` 时，用于定义时间格式化方式。
 
 #### options.hashFunction
 Type: `Function`
 
 Default value: `undefined`
 
-�� `options.appendType` Ϊ `hash` ʱ�����ڻ��hashֵ�ķ������������������������������� `content`���ļ����ݣ��� `encoding`���ļ����룩��
+当 `options.appendType` 为 `hash` 时，用于获得hash值的方法。函数将传入两个参数，依次是 `content`（文件内容）和 `encoding`（文件编码）。
 
-Ĭ�ϵĺ����㷨Ϊ��
+默认的核心算法为：
 
 ```js
 crypto.createHash('sha1').update(content, 'utf8').digest('hex');
@@ -85,22 +85,22 @@ Type: `Object`
 
 Default value: `{}`
 
-���ڸ����Ŀ��ơ�keyֵ��Ӧ���ļ���valueֵ��Ӧ���ļ�������ߣ�ʵ�ʵ�������ӵ�ַ��valueֵ��Ӧ�ĵ�ַ��valueֵҲ������������ַ�����磺`http://site.com/script.js`��
+用于更灵活的控制。key值对应的文件是value值对应的文件的替代者，实际的最后链接地址是value值对应的地址。value值也可以是完整地址，例如：`http://site.com/script.js`。
 
-���磬��html��ʹ���� `<script src="./test1.js"></script>` ��һ�ֳ���ı���֮��Ϊ `<script src="./test1.cc8f05f977.js"></script>` ���������������У����ǿ�����Ҫ����ѹ���汾��Ҳ���� `<script src="./test1.min.js"></script>` ���������� `<script src="./test1.min.cc8f05f977.js"></script>` ������֮���ڱ����ʱ��������Ҫ��ԭhtml�е�test1.jsת��Ϊtest1.min.js֮���ٽ��б��롣�������� `options.shim` ����Ϊ `{"test1.js":"test1.min.js"}` ���京���������Ϊԭhtml�е�test1.js��test1.min.js��һ����ƣ�����ʹ�õ���test1.min.js��
+例如，在html中使用了 `<script src="./test1.js"></script>` ，一种常规的编译之后为 `<script src="./test1.cc8f05f977.js"></script>` ，但在生产环境中，我们可能需要的是压缩版本，也就是 `<script src="./test1.min.js"></script>` ，最终生成 `<script src="./test1.min.cc8f05f977.js"></script>` 。换言之，在编译的时候，我们需要将原html中的test1.js转换为test1.min.js之后，再进行编译。可以配置 `options.shim` 参数为 `{"test1.js":"test1.min.js"}` ，其含义可以理解为原html中的test1.js是test1.min.js的一个别称，最终使用的是test1.min.js。
 
-��Ҫע�����¼��㣺
+但要注意以下几点：
 
-- �������Ե�ַ��������Ե���Gruntfile.js���Եĵ�ַ�������������ַ(��http(s)�ȿ�ͷ)�����ֱ�ӽ����滻��
-- ��ֵ���еĵ�ַ��֧��ͨ�����
-- ֻ��������src���Ҹ�·����src�У��˴������ò���Ч��
+- 如果是相对地址，则其相对的是Gruntfile.js而言的地址。如果是完整地址(以http(s)等开头)，则会直接进行替换。
+- 键值对中的地址不支持通配符。
+- 只有配置了src，且该路径在src中，此处的配置才生效。
 
 
 
 ### Usage Examples
 
-#### ��򵥵��÷�
-��ԭurl��׷��ʱ�������򵥵��÷���ֻ��ҪΪÿһ��Ŀ��htmlҳ��������Ҫ������js��css���ɡ�ע�����������·���������Gruntfile.js���Եģ�������html�е��Ǹ�·����
+#### 最简单的用法
+在原url上追加时间戳是最简单的用法，只需要为每一个目标html页面配置需要处理的js和css即可。注意这里的所有路径都是相对Gruntfile.js而言的，并不是html中的那个路径。
 
 ```js
 grunt.initConfig({
@@ -113,15 +113,15 @@ grunt.initConfig({
 });
 ```
 
-ִ��֮��
+执行之后：
 
 ```html
 <link rel="stylesheet" href="./test1.css?_v=151107142609">
 <script type="text/javascript" src="./test1.js?_v=151107142609"></script>
 ```
 
-#### ֧�����ִ���
-ͨ������ `options.type` �� `options.appendType` �����Դﵽ���ֲ�ͬ�ı���Ч����
+#### 支持四种搭配
+通过配置 `options.type` 和 `options.appendType` ，可以达到四种不同的编译效果。
 
 ```js
 grunt.initConfig({
@@ -160,7 +160,7 @@ grunt.initConfig({
 });
 ```
 
-ִ��֮��
+执行之后：
 
 ```html
 <!--suffix_time-->
@@ -181,8 +181,8 @@ grunt.initConfig({
 <script type="text/javascript" src="./test1.cc8f05f977.js"></script>
 ```
 
-#### inlineģʽ
-��ʱ����Ҫ�����õ�js��css�ļ����ݺ��뵽html�У���ֻ��Ҫ�򵥵����� `options.type` Ϊ `inline` ���ɡ�
+#### inline模式
+有时候需要将引用的js或css文件内容合入到html中，则只需要简单的配置 `options.type` 为 `inline` 即可。
 
 ```js
 grunt.initConfig({
@@ -197,10 +197,10 @@ grunt.initConfig({
 });
 ```
 
-#### shim��ʹ��
-�����Ҫ��html�е�js��css�ļ������Զ�����滻�������ʹ�� `options.shim` �����á�������������У�����ʹ���� `options.shim` �����罫test2.js�ڱ���ʱ���滻��test2.min.js�ٽ��к������룻��testexternal.js�滻��һ���ⲿ���ӡ�
+#### shim的使用
+如果需要对html中的js或css文件进行自定义的替换，则可以使用 `options.shim` 来配置。在下面的例子中，我们使用了 `options.shim` ，例如将test2.js在编译时先替换成test2.min.js再进行后续编译；将testexternal.js替换成一个外部链接。
 
-Ҫ����Ч���� `options.shim` ��ʹ�ã�������ϸ�Ա��������ӱ���֮ǰ�ͱ���֮��Ľ���Աȡ�
+要更有效理解 `options.shim` 的使用，可以仔细对比下面例子编译之前和编译之后的结果对比。
 
 ```js
 grunt.initConfig({
@@ -246,7 +246,7 @@ grunt.initConfig({
 });
 ```
 
-ִ��֮ǰ��
+执行之前：
 
 ```html
 <link rel="stylesheet" href="./test1.css">
@@ -257,7 +257,7 @@ grunt.initConfig({
 <script type="text/javascript"></script>
 ```
 
-ִ��֮��
+执行之后：
 
 ```html
 <!--shim_embed-->
@@ -279,7 +279,7 @@ grunt.initConfig({
 
 
 ## Other
-������Ĳ����������о���һЩ�������ɹ��ο���
+本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
 2015-11-07 v1.0.1 Fix bug.
