@@ -23,7 +23,7 @@ module.exports = function (grunt) {
     grunt.registerMultiTask('htmlstamp', 'deal with html for js or css link', function () {
         // Merge task-specific and/or target-specific options with these defaults.
         var options = this.options({
-            type: 'suffix', // 以哪种形式追加，suffix:后缀模式，embed:嵌入模式，inline：内联模式，custom：自定义模式
+            type: 'suffix', // 以哪种形式追加，suffix:后缀模式，embed:嵌入模式，inline：内联模式
             appendType: 'time', // 追加什么类型的字符串，time:时间戳形式，hash:hash形式，用于type=suffix和embed模式
             //suffixKey: '_v', // 后缀的key，用于type=suffix模式
             hashFunction: getHash, // 当appendType=hash时获得hash值的函数，用于type=suffix和embed模式
