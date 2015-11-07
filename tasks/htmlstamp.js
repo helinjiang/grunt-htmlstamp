@@ -32,15 +32,6 @@ module.exports = function (grunt) {
 
         });
 
-        /**
-         * hash文件对应表，key值为文件相对于Gruntfile.js的路径，value值是要追加的字符串，例如：
-         * {
-         *     'test/fixtures/test1.js':  "20151105151923"
-         * }
-         * @type {{}}
-         */
-        var appendStrMap = {};
-
         // Iterate over all specified file groups.
         this.files.forEach(function (f) {
             /**
@@ -73,8 +64,8 @@ module.exports = function (grunt) {
                  * 最终要追加的字符串，可能是时间戳或者hash值等
                  * @type {String}
                  */
-                var appendStr = appendStrMap[jsCssFilePath] || tool.getAppendStr(grunt, options, jsCssFilePath);
-                appendStrMap[jsCssFilePath] = appendStr;
+                var appendStr = tool.getAppendStr(grunt, options, jsCssFilePath);
+
 
                 /**
                  * js或css文件相对于html文件的路径
