@@ -183,8 +183,10 @@ module.exports = function (grunt) {
 
             // 如果requirejs场景，还需要处理options.requirejsConfigUrl及其定义的依赖（这些依赖js从f.src中传入）
             if (isRequireJS && (['suffix', 'embed'].indexOf(options.type) > -1)) {
-                tool.dealRequireJSConfig(grunt, fileArr, options.type, options.requirejsConfigUrl, options.requirejsBaseUrl);
-                grunt.log.writeln('Deal dependence of RequireJS by "' + options.requirejsConfigUrl + '" for file "' + htmlFilePath + '" success.');
+                var result = tool.dealRequireJSConfig(grunt, fileArr, options.type, options.requirejsConfigUrl, options.requirejsBaseUrl);
+                if (result) {
+                    grunt.log.writeln('Deal dependence of RequireJS by "' + options.requirejsConfigUrl + '" for file "' + htmlFilePath + '" success.');
+                }
             }
         });
     });
