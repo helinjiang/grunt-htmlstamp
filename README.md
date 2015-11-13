@@ -378,6 +378,8 @@ requirejs.config({
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
+2015-11-13 v1.1.1 Fix bug.
+
 2015-11-13 v1.1.0 Support `option.requirejsConfigUrl` and `option.requirejsBaseUrl` to deal with RequireJS.
 
 2015-11-07 v1.0.2 Fix bug.
