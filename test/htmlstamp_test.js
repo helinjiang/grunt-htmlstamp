@@ -138,7 +138,6 @@ exports.htmlstamp = {
             test.equal(actual, expected, 'new file name with hash code. (Eg. script.241f131860.js)');
         }
 
-
         test.done();
     },
     inline: function (test) {
@@ -166,7 +165,6 @@ exports.htmlstamp = {
             test.equal(actual, expected, 'use shim for embed type');
         }
 
-
         test.done();
     },
     shim_suffix: function (test) {
@@ -176,6 +174,84 @@ exports.htmlstamp = {
             expected = grunt.file.read('test/expected/shim_suffix.html');
 
         test.equal(actual, expected, 'use shim for suffix type');
+
+        test.done();
+    },
+    requirejs_embed_hash: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/requirejs_embed_hash.html'),
+            expected = grunt.file.read('test/expected/requirejs_embed_hash.html');
+
+        // 该模式还要注意要确保生成了目标文件！！
+        var arr = [
+            'tmp/requirejs/page/requirejs_embed_hash.699d310016.js',
+            'tmp/require.js.outside.4b55644553.js',
+            'tmp/requirejs/common/config.58c83682bd.js',
+            'tmp/requirejs/widget/along.46d8676b31.js',
+            'tmp/requirejs/widget/msg.1.1.f9707ff6a4.js',
+            'tmp/requirejs/widget/note.0c1af63535.js'
+        ];
+
+        var result = true;
+        for (var i = 0; i < arr.length; i++) {
+            if (!grunt.file.exists(arr[i])) {
+                grunt.log.error('NOT exist file:' + arr[i]);
+                result = false;
+                break;
+            }
+        }
+
+        if (!result) {
+            test.equal(actual, expected + ' NO JS', 'RequireJS embed hash should generate new jsfile too.');
+        } else {
+            test.equal(actual, expected, 'RequireJS embed hash');
+        }
+
+        test.done();
+    },
+    requirejs_suffix_time: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/requirejs_suffix_time.html'),
+            expected = grunt.file.read('test/expected/requirejs_suffix_time.html');
+
+        /*
+         * 注意此处的判断应该是下面这种，但它只是抛出异常，因此变通的使用test.equal来处理。
+         * test.ifError(!checkTimestamp(actual,expected));
+         */
+        var tmp1 = actual,
+            tmp2 = actual,
+            result = true,
+            msg = "";
+
+        if (!checkTimestamp(actual, expected)) {
+            tmp2 = expected;
+            result = false;
+            msg = 'append in query with timestamp in html. (Eg. script.js?_v=151106132902)';
+        }
+
+        if (result) {
+            var config2content = grunt.file.read('tmp/requirejs/common/config2.js');
+
+            if (config2content.indexOf('bust') < 0) {
+                tmp2 = expected;
+                result = false;
+                msg = 'append in query with timestamp in config2.js. (Eg. script.js?_v=151106132902)';
+            }
+        }
+
+        if (result) {
+            var pagecontent = grunt.file.read('tmp/requirejs/page/requirejs_suffix_time.js');
+
+            if (pagecontent.indexOf('requirejs/common/config2.js') < 0) {
+                tmp2 = expected;
+                result = false;
+                msg = 'append in query with timestamp in requirejs_suffix_time.js. (Eg. script.js?_v=151106132902)';
+            }
+        }
+
+        test.equal(tmp1, tmp2, msg);
 
         test.done();
     }

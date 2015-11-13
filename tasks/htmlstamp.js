@@ -29,8 +29,9 @@ module.exports = function (grunt) {
             hashFunction: getHash, // 当appendType=hash时获得hash值的函数，用于type=suffix和embed模式
             timestampFormat: 'yymmddHHMMss', // 当appendType=time时，设定时间戳的格式
             //customAppend: '', // TODO 除了自动生成的时间戳或hash之外，再追加的字符串，例如自定义的版本号等
-            shim: {} //需要修正的对应关系，key值为当前正使用的文件，value值为替换key值的新的文件，用于type=suffix和embed模式
-
+            shim: {}, // 需要修正的对应关系，key值为当前正使用的文件，value值为替换key值的新的文件，用于type=suffix和embed模式
+            requirejsConfigUrl: '', // 针对RequireJS的特别的配置，为配置requirejs.config的文件
+            requirejsBaseUrl: '' // 针对RequireJS的特别的配置，为配置requirejs.config中的baseUrl，但该地址是相对于Gruntfile.js的路径
         });
 
         // Iterate over all specified file groups.
@@ -41,11 +42,34 @@ module.exports = function (grunt) {
              */
             var htmlFilePath = f.dest;
 
+            var srcArr = f.src;
+
+            /**
+             * 是否为requirejs场景，只要配置了requirejsConfigUrl，且该文件存在，则为true
+             * @type {Boolean}
+             */
+            var isRequireJS = false;
+            if (options.requirejsConfigUrl && grunt.file.exists(options.requirejsConfigUrl)) {
+                isRequireJS = true;
+            }
+
+            /**
+             * script标签上获取和操作url的属性值，默认为'src'，但在requirejs场景时，需要操作data-main。
+             * @type {String}
+             */
+            var scriptAttr = isRequireJS ? 'data-main' : 'src';
+
+            //如果isRequireJS模式，则在src中追加options.requirejsConfigUrl
+            if (isRequireJS) {
+                srcArr.push(options.requirejsConfigUrl);
+            }
+
+
             /**
              * js和css的文件数组
              * @type {Array}
              */
-            var fileArr = f.src.filter(function (filepath) {
+            var fileArr = srcArr.filter(function (filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -67,12 +91,11 @@ module.exports = function (grunt) {
                  */
                 var appendStr = tool.getAppendStr(grunt, options, jsCssFilePath);
 
-
                 /**
                  * js或css文件相对于html文件的路径
                  * @type {String}
                  */
-                var filePathInHtml = tool.getPathInHtml(htmlFilePath, jsCssFilePath);
+                var filePathInHtml = util.getRelativeUrl(htmlFilePath, jsCssFilePath);
 
                 /**
                  * js物理路径jscssFilePath为：test/fixtures/test1.js，html物理路径htmlFilePath为：test/fixtures/index1.html
@@ -103,7 +126,7 @@ module.exports = function (grunt) {
                         item.shimPathToReplace = shimPath;
                     } else {
                         // 否则，计算相对于html的地址
-                        item.shimPathInHtml = tool.getPathInHtml(htmlFilePath, shimPath);
+                        item.shimPathInHtml = util.getRelativeUrl(htmlFilePath, shimPath);
                         item.shimPathToCopy = shimPath;
 
                         // 且如果不存在该文件则拷贝一份
@@ -137,18 +160,18 @@ module.exports = function (grunt) {
              */
             var newContent = htmlContent;
             switch (options.type) {
+                case 'suffix':
+                    newContent = tool.getHtmlContentSuffix($, fileArr, scriptAttr);
+                    break;
                 case 'embed':
-                    newContent = tool.getHtmlContentEmbed($, fileArr);
+                    newContent = tool.getHtmlContentEmbed($, fileArr, scriptAttr);
                     tool.copyFileIfEmbed(grunt, fileArr);
                     break;
                 case 'inline':
-                    newContent = tool.getHtmlContentInline($, fileArr, grunt);
-                    break;
-                case 'suffix':
-                    newContent = tool.getHtmlContentSuffix($, fileArr);
+                    newContent = tool.getHtmlContentInline($, fileArr, scriptAttr, grunt);
                     break;
                 default :
-                    newContent = tool.getHtmlContentSuffix($, fileArr);
+                    newContent = tool.getHtmlContentSuffix($, fileArr, scriptAttr);
                     break;
             }
 
@@ -156,7 +179,13 @@ module.exports = function (grunt) {
             grunt.file.write(htmlFilePath, newContent);
 
             // Print a success message.
-            grunt.log.writeln('File "' + f.dest + '" created.');
+            grunt.log.writeln('File "' + htmlFilePath + '" created.');
+
+            // 如果requirejs场景，还需要处理options.requirejsConfigUrl及其定义的依赖（这些依赖js从f.src中传入）
+            if (isRequireJS && (['suffix', 'embed'].indexOf(options.type) > -1)) {
+                tool.dealRequireJSConfig(grunt, fileArr, options.type, options.requirejsConfigUrl, options.requirejsBaseUrl);
+                grunt.log.writeln('Deal dependence of RequireJS by "' + options.requirejsConfigUrl + '" for file "' + htmlFilePath + '" success.');
+            }
         });
     });
 

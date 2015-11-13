@@ -95,6 +95,19 @@ Default value: `{}`
 - 键值对中的地址不支持通配符。
 - 只有配置了src，且该路径在src中，此处的配置才生效。
 
+#### options.requirejsConfigUrl
+Type: `String`
+
+Default value: `''`
+
+针对RequireJS的特别的配置，当该值为有效值时，即启动了RequireJS的特殊配置，该值为配置requirejs.config的文件路径，该路径相对Gruntfile.js而言。
+
+#### options.requirejsBaseUrl
+Type: `String`
+
+Default value: `''`
+
+针对RequireJS的特别的配置，当 `options.requirejsConfigUrl` 为有效值时才生效。该值与requirejs.config中的baseUrl作用是一样的，区别在于此处的路径是相对于Gruntfile.js的路径。
 
 
 ### Usage Examples
@@ -276,12 +289,99 @@ grunt.initConfig({
 <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript"></script>
 ```
+#### 针对RequireJS的特殊配置
+如果使用RequireJS来组织代码，则可以通过配置 `option.requirejsConfigUrl` 和 `option.requirejsBaseUrl` 来构建。与常规用法一样，通过 `option.type` 可以有两种类型的用法：
+
+- `suffix`模式，建议用于开发场景，实际的工作：修改html中 `data-main` 的url地址，追加时间戳或md5值，类似 `?v=xxxx`;为 `data-main` 中的js文件中引入的`option.requirejsConfigUrl`地址追加字符串；修改 `option.requirejsConfigUrl` 文件，追加 `urlArgs` 参数（这种方式只支持时间戳）
+- `embed`模式，建议用于发布场景，实际的工作：修改html中 `data-main` 的url地址内嵌时间戳或md5值，类似 `xxx.123.js`;为 `data-main` 中的js文件中引入的`option.requirejsConfigUrl`地址内嵌时间戳或md5值；修改 `option.requirejsConfigUrl` 文件，删除 `urlArgs` 参数，同时在 `paths` 中新增或修改对应。
+
+```js
+grunt.initConfig({
+  htmlstamp: {
+    requirejs_embed_hash: { //建议发布场景
+        options: {
+            type: 'embed',
+            appendType: 'hash',
+            requirejsConfigUrl: 'tmp/requirejs/common/config.js',
+            requirejsBaseUrl: 'tmp/requirejs/'
+        },
+        files: {
+            'tmp/requirejs_embed_hash.html': [
+                'tmp/requirejs/page/requirejs_embed_hash.js',
+                'tmp/requirejs/widget/note.js',
+                'tmp/requirejs/widget/msg.1.1.js',
+                'tmp/requirejs/widget/along.js',
+                'tmp/require.js.outside.js'
+            ]
+        }
+    },
+    requirejs_suffix_time: { //建议开发场景
+        options: {
+            requirejsConfigUrl: 'tmp/requirejs/common/config2.js',
+            requirejsBaseUrl: 'tmp/requirejs/'
+        },
+        files: {
+            'tmp/requirejs_suffix_time.html': [
+                'tmp/requirejs/page/requirejs_suffix_time.js',
+                'tmp/requirejs/widget/note.js',
+                'tmp/requirejs/widget/msg.1.1.js',
+                'tmp/requirejs/widget/along.js',
+                'tmp/require.js.outside.js'
+            ]
+        }
+    }
+  },
+});
+```
+
+对于上述的 `htmlstamp:requirejs_embed_hash` 任务执行之后，`option.requirejsConfigUrl` 配置文件变化：
+
+```js
+// 构建之前
+requirejs.config({
+    baseUrl: "requirejs",
+    urlArgs: "bust=" + (new Date()).getTime(), // 避免缓存之用，生产环境要移除
+    paths: {
+        jquery: "lib/jquery-1.11.3.min",
+        'widget/msg': './widget/msg.1.1', //注释
+        'note': 'widget/note', /*注释*/
+        outside: '../require.js.outside',
+        bootstrap: "//cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min",
+        "underscore": "http://cdn.bootcss.com/underscore.js/1.8.3/underscore-min",
+    },
+    shim: {
+        "widget/msg": ["jquery"]
+    }
+});
+
+// 构建之后
+requirejs.config({
+    baseUrl: "requirejs",
+    paths: {
+        "jquery": "lib/jquery-1.11.3.min",
+        "widget/msg": "widget/msg.1.1.f9707ff6a4",
+        "note": "widget/note.0c1af63535",
+        "outside": "../require.js.outside.4b55644553",
+        "widget/along": "widget/along.46d8676b31",
+        "bootstrap": "//cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min",
+        "underscore": "http://cdn.bootcss.com/underscore.js/1.8.3/underscore-min"
+    },
+    shim: {
+        "widget/msg": ["jquery"]
+    }
+});
+```
+
 
 
 ## Other
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
+2015-11-13 v1.1.0 Support `option.requirejsConfigUrl` and `option.requirejsBaseUrl` to deal with RequireJS.
+
+2015-11-07 v1.0.2 Fix bug.
+
 2015-11-07 v1.0.1 Fix bug.
 
 2015-11-07 v1.0.0 Support `option.shim` to enable more choice to deal with js or css url.

@@ -115,7 +115,40 @@ module.exports = function (grunt) {
                         'tmp/test2.js',
                         'tmp/test3.js',
                         'tmp/testexternal.js',
-                        'tmp/test1.css']
+                        'tmp/test1.css'
+                    ]
+                }
+            },
+            requirejs_embed_hash: {
+                options: {
+                    type: 'embed',
+                    appendType: 'hash',
+                    requirejsConfigUrl: 'tmp/requirejs/common/config.js',
+                    requirejsBaseUrl: 'tmp/requirejs/'
+                },
+                files: {
+                    'tmp/requirejs_embed_hash.html': [
+                        'tmp/requirejs/page/requirejs_embed_hash.js',
+                        'tmp/requirejs/widget/note.js',
+                        'tmp/requirejs/widget/msg.1.1.js',
+                        'tmp/requirejs/widget/along.js',
+                        'tmp/require.js.outside.js'
+                    ]
+                }
+            },
+            requirejs_suffix_time: {
+                options: {
+                    requirejsConfigUrl: 'tmp/requirejs/common/config2.js',
+                    requirejsBaseUrl: 'tmp/requirejs/'
+                },
+                files: {
+                    'tmp/requirejs_suffix_time.html': [
+                        'tmp/requirejs/page/requirejs_suffix_time.js',
+                        'tmp/requirejs/widget/note.js',
+                        'tmp/requirejs/widget/msg.1.1.js',
+                        'tmp/requirejs/widget/along.js',
+                        'tmp/require.js.outside.js'
+                    ]
                 }
             }
         },
