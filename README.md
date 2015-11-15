@@ -378,6 +378,8 @@ requirejs.config({
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
+2015-11-15 v1.1.4 Fix bug.
+
 2015-11-15 v1.1.3 Fix bug.
 
 2015-11-14 v1.1.2 Fix bug. Enable to support `.js` in `data-main`'s script file  with `option.requirejsConfigUrl` for  RequieJS. 
