@@ -107,7 +107,7 @@ Type: `String`
 
 Default value: `''`
 
-针对RequireJS的特别的配置，当 `options.requirejsConfigUrl` 为有效值时才生效。该值与requirejs.config中的baseUrl作用是一样的，区别在于此处的路径是相对于Gruntfile.js的路径。
+针对RequireJS的特别的配置，当 `options.requirejsConfigUrl` 为有效值时才生效。该值与requirejs.config中的baseUrl作用是一样的，区别在于此处的路径是相对于Gruntfile.js的路径。该值用于在自动处理requirejs.config的 `paths` 值时，计算相对路径。
 
 
 ### Usage Examples
@@ -378,6 +378,8 @@ requirejs.config({
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
+2015-11-15 v1.1.3 Fix bug.
+
 2015-11-14 v1.1.2 Fix bug. Enable to support `.js` in `data-main`'s script file  with `option.requirejsConfigUrl` for  RequieJS. 
 
 2015-11-13 v1.1.1 Fix bug.

@@ -234,7 +234,7 @@ exports.htmlstamp = {
         if (result) {
             var config2content = grunt.file.read('tmp/requirejs/common/config2.js');
 
-            if (config2content.indexOf('bust') < 0) {
+            if (config2content.indexOf('_v=') < 0) {
                 tmp2 = expected;
                 result = false;
                 msg = 'append in query with timestamp in config2.js. (Eg. script.js?_v=151106132902)';
