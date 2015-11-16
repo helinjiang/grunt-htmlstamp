@@ -172,23 +172,22 @@ module.exports = function (grunt) {
                     ]
                 }
             },
-            //requirejs_no_paths: {
-            //    options: {
-            //        type: 'embed',
-            //        appendType: 'hash',
-            //        requirejsConfigUrl: 'tmp/requirejs/common/confignopaths.js',
-            //        requirejsBaseUrl: 'tmp/requirejs/'
-            //    },
-            //    files: {
-            //        'tmp/requirejs_no_paths.html': [
-            //            'tmp/requirejs/page/requirejs_complex.js',
-            //            'tmp/requirejs/widget/note.js',
-            //            'tmp/requirejs/widget/msg.1.1.js',
-            //            'tmp/requirejs/widget/along.js',
-            //            'tmp/require.js.outside.js'
-            //        ]
-            //    }
-            //}
+            requirejs_no_paths: {
+                options: {
+                    type: 'embed',
+                    appendType: 'hash',
+                    requirejsConfigUrl: 'tmp/requirejs/common/confignopaths.js',
+                    requirejsBaseUrl: 'tmp/requirejs/'
+                },
+                files: {
+                    'tmp/requirejs_no_paths.html': [
+                        'tmp/requirejs/page/requirejs_no_paths.js',
+                        'tmp/requirejs/widget/note.js',
+                        'tmp/requirejs/widget/along.js',
+                        'tmp/require.js.outside.js'
+                    ]
+                }
+            }
         },
 
         // Unit tests.

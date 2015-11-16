@@ -1,7 +1,7 @@
 {
   "name": "grunt-htmlstamp",
   "description": "deal with js or css link in html",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "homepage": "https://github.com/helinjiang/grunt-htmlstamp",
   "author": {
     "name": "helinjiang",
@@ -44,7 +44,8 @@
     "timestamp",
     "hash",
     "suffix",
-    "cache"
+    "cache",
+    "requirejs"
   ],
   "dependencies": {
     "cheerio": "^0.19.0"

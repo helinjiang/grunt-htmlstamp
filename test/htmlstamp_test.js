@@ -268,7 +268,7 @@ exports.htmlstamp = {
             'tmp/requirejs/page/requirejs_complex.*.js',
             'tmp/requirejs/page/requirejs_complex_2.*.js',
             'tmp/require.js.outside.*.js',
-            'tmp/requirejs/common/config.*.js',
+            'tmp/requirejs/common/configcomplex.*.js',
             'tmp/requirejs/widget/along.*.js',
             'tmp/requirejs/widget/msg.1.1.*.js',
             'tmp/requirejs/widget/note.*.js'
@@ -287,6 +287,51 @@ exports.htmlstamp = {
             test.equal(actual + actual2, expected + expected2 + ' NO JS', 'RequireJS embed hash should generate new jsfile too.');
         } else {
             test.equal(actual + actual2, expected + expected2, 'RequireJS requirejs_complex');
+        }
+
+        test.done();
+    },
+    requirejs_no_paths: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/requirejs_no_paths.html'),
+            expected = grunt.file.read('test/expected/requirejs_no_paths.html');
+
+        // 该模式还要注意要确保生成了目标文件！！
+        var arr = [
+            'tmp/requirejs/page/requirejs_no_paths.*.js',
+            'tmp/require.js.outside.*.js',
+            'tmp/requirejs/common/confignopaths.*.js',
+            'tmp/requirejs/widget/along.*.js',
+            'tmp/requirejs/widget/note.*.js'
+        ];
+        var result = true,
+            msg = "";
+
+        for (var i = 0; i < arr.length; i++) {
+            var arrExist = glob.sync(arr[i]);
+            if (!arrExist || !arrExist.length) {
+
+                msg = 'NOT exist file:' + arr[i];
+                console.error(msg);
+                result = false;
+                break;
+            }
+        }
+
+        if (result) {
+            var reg = /paths\s*:\s*\{[\r\n]*([^\}])*\}/g,
+                configContent = grunt.file.read(glob.sync('tmp/requirejs/common/confignopaths.*.js')[0]);
+            if (!configContent.match(reg)) {
+                msg = 'confignopaths.js should have paths!';
+                result = false;
+            }
+        }
+
+        if (!result) {
+            test.equal(actual, expected + ' NO JS', msg);
+        } else {
+            test.equal(actual, expected, 'RequireJS requirejs_no_paths');
         }
 
         test.done();
