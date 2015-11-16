@@ -34,6 +34,27 @@ module.exports = function (grunt) {
             requirejsBaseUrl: '' // 针对RequireJS的特别的配置，为配置requirejs.config中的baseUrl，但该地址是相对于Gruntfile.js的路径
         });
 
+        /**
+         * 是否为requirejs场景，只要配置了requirejsConfigUrl，且该文件存在，则为true
+         * @type {Boolean}
+         */
+        var isRequireJS = false;
+        if (options.requirejsConfigUrl && grunt.file.exists(options.requirejsConfigUrl)) {
+            isRequireJS = true;
+        }
+
+        /**
+         * script标签上获取和操作url的属性值，默认为'src'，但在requirejs场景时，需要操作data-main。
+         * @type {String}
+         */
+        var scriptAttr = isRequireJS ? 'data-main' : 'src';
+
+        /**
+         * 当前的任务目标，例如‘requirejs_embed_hash’等
+         * @type {String}
+         */
+        var taskTarget = this.target;
+
         // Iterate over all specified file groups.
         this.files.forEach(function (f) {
             /**
@@ -44,26 +65,10 @@ module.exports = function (grunt) {
 
             var srcArr = f.src;
 
-            /**
-             * 是否为requirejs场景，只要配置了requirejsConfigUrl，且该文件存在，则为true
-             * @type {Boolean}
-             */
-            var isRequireJS = false;
-            if (options.requirejsConfigUrl && grunt.file.exists(options.requirejsConfigUrl)) {
-                isRequireJS = true;
-            }
-
-            /**
-             * script标签上获取和操作url的属性值，默认为'src'，但在requirejs场景时，需要操作data-main。
-             * @type {String}
-             */
-            var scriptAttr = isRequireJS ? 'data-main' : 'src';
-
             //如果isRequireJS模式，则在src中追加options.requirejsConfigUrl
             if (isRequireJS) {
                 srcArr.push(options.requirejsConfigUrl);
             }
-
 
             /**
              * js和css的文件数组
@@ -109,7 +114,6 @@ module.exports = function (grunt) {
                  *  appendStr:"20151105151923"
                  * }
                  */
-
                 var item = {
                     filePath: filePath, // 相对于Gruntfile.js的路径
                     filePathInHtml: filePathInHtml,// 相对于html的路径
@@ -179,11 +183,11 @@ module.exports = function (grunt) {
             grunt.file.write(htmlFilePath, newContent);
 
             // Print a success message.
-            grunt.log.writeln('File "' + htmlFilePath + '" created.');
+            grunt.log.writeln('File "' + htmlFilePath + '" created success.');
 
             // 如果requirejs场景，还需要处理options.requirejsConfigUrl及其定义的依赖（这些依赖js从f.src中传入）
             if (isRequireJS && (['suffix', 'embed'].indexOf(options.type) > -1)) {
-                var result = tool.dealRequireJSConfig(grunt, fileArr, options.type, options.requirejsConfigUrl, options.requirejsBaseUrl);
+                var result = tool.dealRequireJSConfig(grunt, taskTarget, fileArr, options.type, options.requirejsConfigUrl, options.requirejsBaseUrl);
                 if (result) {
                     grunt.log.writeln('Deal dependence of RequireJS by "' + options.requirejsConfigUrl + '" for file "' + htmlFilePath + '" success.');
                 }

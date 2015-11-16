@@ -1,7 +1,7 @@
 'use strict';
 
 var grunt = require('grunt');
-
+var glob = require("glob");
 /*
  ======== A Handy Little Nodeunit Reference ========
  https://github.com/caolan/nodeunit
@@ -185,18 +185,18 @@ exports.htmlstamp = {
 
         // 该模式还要注意要确保生成了目标文件！！
         var arr = [
-            'tmp/requirejs/page/requirejs_embed_hash.699d310016.js',
-            'tmp/require.js.outside.4b55644553.js',
-            'tmp/requirejs/common/config.58c83682bd.js',
-            'tmp/requirejs/widget/along.46d8676b31.js',
-            'tmp/requirejs/widget/msg.1.1.f9707ff6a4.js',
-            'tmp/requirejs/widget/note.0c1af63535.js'
+            'tmp/requirejs/page/requirejs_embed_hash.*.js',
+            'tmp/require.js.outside.*.js',
+            'tmp/requirejs/common/config.*.js',
+            'tmp/requirejs/widget/along.*.js',
+            'tmp/requirejs/widget/msg.1.1.*.js',
+            'tmp/requirejs/widget/note.*.js'
         ];
-
         var result = true;
         for (var i = 0; i < arr.length; i++) {
-            if (!grunt.file.exists(arr[i])) {
-                grunt.log.error('NOT exist file:' + arr[i]);
+            var arrExist = glob.sync(arr[i]);
+            if (!arrExist || !arrExist.length) {
+                console.error('NOT exist file:' + arr[i]);
                 result = false;
                 break;
             }
@@ -205,7 +205,7 @@ exports.htmlstamp = {
         if (!result) {
             test.equal(actual, expected + ' NO JS', 'RequireJS embed hash should generate new jsfile too.');
         } else {
-            test.equal(actual, expected, 'RequireJS embed hash');
+            test.equal(actual, expected, 'RequireJS requirejs_embed_hash');
         }
 
         test.done();
@@ -252,6 +252,42 @@ exports.htmlstamp = {
         }
 
         test.equal(tmp1, tmp2, msg);
+
+        test.done();
+    },
+    requirejs_complex: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/requirejs_complex.html'),
+            expected = grunt.file.read('test/expected/requirejs_complex.html'),
+            actual2 = grunt.file.read('tmp/requirejs_complex_2.html'),
+            expected2 = grunt.file.read('test/expected/requirejs_complex_2.html');
+
+        // 该模式还要注意要确保生成了目标文件！！
+        var arr = [
+            'tmp/requirejs/page/requirejs_complex.*.js',
+            'tmp/requirejs/page/requirejs_complex_2.*.js',
+            'tmp/require.js.outside.*.js',
+            'tmp/requirejs/common/config.*.js',
+            'tmp/requirejs/widget/along.*.js',
+            'tmp/requirejs/widget/msg.1.1.*.js',
+            'tmp/requirejs/widget/note.*.js'
+        ];
+        var result = true;
+        for (var i = 0; i < arr.length; i++) {
+            var arrExist = glob.sync(arr[i]);
+            if (!arrExist || !arrExist.length) {
+                console.error('NOT exist file:' + arr[i]);
+                result = false;
+                break;
+            }
+        }
+
+        if (!result) {
+            test.equal(actual + actual2, expected + expected2 + ' NO JS', 'RequireJS embed hash should generate new jsfile too.');
+        } else {
+            test.equal(actual + actual2, expected + expected2, 'RequireJS requirejs_complex');
+        }
 
         test.done();
     }
