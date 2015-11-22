@@ -50,7 +50,7 @@ module.exports = function (grunt) {
         var scriptAttr = isRequireJS ? 'data-main' : 'src';
 
         /**
-         * 当前的任务目标，例如‘requirejs_embed_hash’等
+         * 当前的任务目标，例如‘requirejs_embed_hash’等，用于在多任务场景下时，根据任务名缓存一些信息，避免重复计算
          * @type {String}
          */
         var taskTarget = this.target;
