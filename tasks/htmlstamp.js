@@ -35,6 +35,19 @@ module.exports = function (grunt) {
         });
 
         /**
+         * shim的config对象
+         * 注意：当shim中key值有变量时，变量未被解析，此处要处理一下
+         * https://github.com/helinjiang/grunt-htmlstamp/issues/1
+         * @type {{}}
+         */
+        var shimConfig = {},
+            shimKeys = Object.keys(options.shim);
+
+        shimKeys.forEach(function (key) {
+            shimConfig[grunt.config.process(key)] = options.shim[key];
+        });
+
+        /**
          * 是否为requirejs场景，只要配置了requirejsConfigUrl，且该文件存在，则为true
          * @type {Boolean}
          */
@@ -121,7 +134,7 @@ module.exports = function (grunt) {
                 };
 
                 // 如果在shim中配置了该路径的shim值，则追加之
-                var shimPath = options.shim[filePath];
+                var shimPath = shimConfig[filePath];
                 if (shimPath) {
                     item.shimPath = shimPath;
 

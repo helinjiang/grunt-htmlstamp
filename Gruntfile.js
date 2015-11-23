@@ -12,6 +12,7 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        testVar: 'tmp',
         jshint: {
             all: [
                 'Gruntfile.js',
@@ -86,7 +87,7 @@ module.exports = function (grunt) {
                     type: 'embed',
                     appendType: 'hash',
                     shim: {
-                        'tmp/test2.js': 'tmp/test2.min.js',
+                        '<%=testVar%>/test2.js': 'tmp/test2.min.js',
                         'tmp/test3.js': 'tmp/testshim.js',
                         'tmp/testexternal.js': 'http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js'
                     }

@@ -1,7 +1,7 @@
 {
   "name": "grunt-htmlstamp",
   "description": "deal with js or css link in html",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://github.com/helinjiang/grunt-htmlstamp",
   "author": {
     "name": "helinjiang",
