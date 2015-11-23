@@ -82,6 +82,17 @@ module.exports = function (grunt) {
                     'tmp/inline.html': ['tmp/test1.js', 'tmp/test1.css']
                 }
             },
+            inline_shim: {
+                options: {
+                    type: 'inline',
+                    shim: {
+                        'tmp/test1.js': 'tmp/test2.js'
+                    }
+                },
+                files: {
+                    'tmp/inline_shim.html': ['tmp/test1.js', 'tmp/test1.css']
+                }
+            },
             shim_embed: {
                 options: {
                     type: 'embed',

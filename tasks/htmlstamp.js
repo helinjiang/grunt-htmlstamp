@@ -139,12 +139,11 @@ module.exports = function (grunt) {
                     item.shimPath = shimPath;
 
                     if (util.isExternalUrl(shimPath)) {
-                        // 如果是完整url，则替换之
-                        item.shimPathToReplace = shimPath;
+                        item.shimPathIsLocal = false;
                     } else {
                         // 否则，计算相对于html的地址
                         item.shimPathInHtml = util.getRelativeUrl(htmlFilePath, shimPath);
-                        item.shimPathToCopy = shimPath;
+                        item.shimPathIsLocal = true;
 
                         // 且如果不存在该文件则拷贝一份
                         if (!grunt.file.exists(shimPath)) {

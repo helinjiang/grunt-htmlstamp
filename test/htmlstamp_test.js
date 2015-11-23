@@ -152,6 +152,18 @@ exports.htmlstamp = {
 
         test.done();
     },
+    inline_shim: function (test) {
+        test.expect(1);
+
+        var actual = grunt.file.read('tmp/inline_shim.html'),
+            expected = grunt.file.read('test/expected/inline_shim.html'),
+            reg = /\r\n\s*/gi;
+
+        // 注意此处要将换行符和空格等都去掉，否则会因为空格数目不一致导致对比失败
+        test.equal(actual.replace(reg, ''), expected.replace(reg, ''), 'insert code into html.');
+
+        test.done();
+    },
     shim_embed: function (test) {
         test.expect(1);
 
