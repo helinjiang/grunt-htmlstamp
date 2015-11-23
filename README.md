@@ -378,6 +378,8 @@ requirejs.config({
 本插件的测试用例中列举了一些用例，可供参考。
 
 ## Release History
+2015-11-23 v1.2.1 Fix bug: [#1](https://github.com/helinjiang/grunt-htmlstamp/issues/1) and [#2](https://github.com/helinjiang/grunt-htmlstamp/issues/2)
+
 2015-11-16 v1.2.0 Fix bug. Support multi `dest` when deal with same config js file with RequireJS mode. Allow config js file without `paths` param.
 
 2015-11-15 v1.1.4 Fix bug.
